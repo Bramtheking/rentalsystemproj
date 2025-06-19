@@ -3,21 +3,28 @@ services:
     name: rental-management-fullstack
     env: python
     buildCommand: |
-      # Install Python dependencies
-      pip install -r requirements.txt
+      # Ensure we're in the root directory
+      pwd
+      ls -la
       
-      # Install Node.js dependencies
+      # Install Node.js dependencies (frontend)
       npm install
       
       # Build Next.js frontend
       npm run build
       
-      # Django setup
-      cd backend && python manage.py collectstatic --noinput
-      cd backend && python manage.py migrate
+      # Install Python dependencies (backend)
+      pip install -r requirements.txt
+      
+      # Django setup - explicitly go to backend and return
+      cd backend && python manage.py collectstatic --noinput && python manage.py migrate && cd ..
+      
+      # Verify we're back in root
+      pwd
     startCommand: |
-      # Start both services using the start script
-      chmod +x start.sh && ./start.sh
+      # Make start script executable and run it
+      chmod +x start.sh
+      ./start.sh
     envVars:
       - key: DJANGO_SECRET_KEY
         generateValue: true
