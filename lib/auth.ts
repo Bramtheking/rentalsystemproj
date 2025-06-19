@@ -9,7 +9,7 @@ import {
 import { auth } from "./firebase"
 
 const API_BASE_URL =
-  process.env.NODE_ENV === "production" ? "https://your-app-name.onrender.com/api" : "http://localhost:8000/api"
+  process.env.NODE_ENV === "production" ? "https://rentalsystemmanagement.onrender.com/api" : "http://localhost:8000/api"
 
 export interface AuthUser {
   uid: string
