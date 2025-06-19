@@ -21,6 +21,20 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  // Add webpack config to handle Firebase compatibility
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+      }
+    }
+    return config
+  },
+  // Ensure proper transpilation
+  transpilePackages: ["firebase"],
 }
 
 module.exports = nextConfig
