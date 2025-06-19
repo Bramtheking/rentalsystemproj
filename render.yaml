@@ -1,15 +1,23 @@
 services:
   - type: web
-    name: rental-management
+    name: rental-management-fullstack
     env: python
     buildCommand: |
+      # Install Python dependencies
       pip install -r requirements.txt
+      
+      # Install Node.js dependencies
+      npm install
+      
+      # Build Next.js frontend
+      npm run build
+      
+      # Django setup
       cd backend && python manage.py collectstatic --noinput
       cd backend && python manage.py migrate
-      npm install
-      npm run build
     startCommand: |
-      cd backend && python manage.py runserver 0.0.0.0:$PORT
+      # Start both services using the start script
+      chmod +x start.sh && ./start.sh
     envVars:
       - key: DJANGO_SECRET_KEY
         generateValue: true
@@ -17,6 +25,8 @@ services:
         value: "False"
       - key: FIREBASE_PROJECT_ID
         value: "rentalapp-fd6f1"
+      - key: PORT
+        value: "10000"
 
 databases:
   - name: rental-db
