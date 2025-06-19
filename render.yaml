@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: rental-management
+    env: python
+    buildCommand: |
+      pip install -r requirements.txt
+      cd backend && python manage.py collectstatic --noinput
+      cd backend && python manage.py migrate
+      npm install
+      npm run build
+    startCommand: |
+      cd backend && python manage.py runserver 0.0.0.0:$PORT
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: FIREBASE_PROJECT_ID
+        value: "rentalapp-fd6f1"
+
+databases:
+  - name: rental-db
+    databaseName: rental_management
+    user: rental_user
