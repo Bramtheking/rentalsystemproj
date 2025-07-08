@@ -1,0 +1,41 @@
+services:
+  - type: web
+    name: rental-backend
+    env: python
+    buildCommand: |
+      cd backend &&
+      pip install -r requirements.txt &&
+      find . -path "*/migrations/*.py" -not -name "__init__.py" -delete &&
+      find . -path "*/migrations/*.pyc" -delete &&
+      python manage.py makemigrations &&
+      python manage.py migrate &&
+      python manage.py collectstatic --noinput &&
+      cd .. &&
+      npm install &&
+      npm run build
+    startCommand: python backend/manage.py runserver 0.0.0.0:$PORT
+    plan: free
+    healthCheckPath: /api/health/
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.6
+      - key: DEBUG
+        value: False
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DJANGO_SETTINGS_MODULE
+        value: rental_backend.settings
+      - key: ALLOWED_HOSTS
+        value: rentalsystemmanagement.onrender.com,localhost,127.0.0.1
+
+  - type: web
+    name: rental-frontend
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_URL
+        value: https://rentalsystemmanagement.onrender.com/api
